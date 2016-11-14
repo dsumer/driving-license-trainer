@@ -1,0 +1,84 @@
+extends layout
+
+block javascripts
+  script(type="text/javascript").
+    $(document).keyup(function(e) {
+      if(e.keyCode === 13) {
+        document.forms['answers'].submit();
+      } else if(e.keyCode === 27) {
+        window.location='/cancel';
+      }
+    });
+  if !Answers
+    script(type="text/javascript").
+      $(document).keyup(function(e) {
+        if(e.keyCode >= 49 && e.keyCode <= 52) {
+          var input = e.keyCode - 49;
+          document.getElementById('answer' + input).checked = !document.getElementById('answer' + input).checked;
+        } else if(e.keyCode >= 97 && e.keyCode <= 100) {
+          var input = e.keyCode - 97;
+          document.getElementById('answer' + input).checked = !document.getElementById('answer' + input).checked;
+        }
+      });
+
+block content
+  form(name="answers",method="get",action="")
+    div(style="width:100%")
+      div(style="width:51%;border:1px solid black;height:300px;float:left;")
+        div(style="padding:20px")
+          h3(style="vertical-align:middle;text-decoration:underline;display:inline-block;margin:0") Frage: #{Frage.FRAGEID}
+          span(style="vertical-align:middle") , #{Punkte} Punkte, #{WhatFrage}, 
+          span(style="vertical-align:middle" class="kartei k#{Kartei}") Kartei #{Kartei}
+          div(style="margin-top:20px")= Frage.FrageText.de
+      div(style="width:48%;border:1px solid black;height:300px;float:right;text-align:center")
+        if FragenInfo.BILD
+          img(style="height:100%;cursor:pointer;" src="/data/images/#{Frage.BildName}" onclick="$('#img_big').css('display','block');")
+      div(style="clear:both")
+      if Answers
+        div(style="width:100%;border:1px solid black;margin-top:1%;")
+          div(style="padding:20px;padding-bottom:0px")
+            each answer, i in CurrentAnswers
+              if CurrentAnswers[i].richtig
+                p(style="margin:0;margin-bottom:20px;color:green")
+                  if Answers[i].input
+                    input(type="checkbox" class="answer" name="#{i}" disabled checked)
+                  else 
+                    input(type="checkbox" class="answer" name="#{i}" disabled)
+                  b #{(i + 1)}. 
+                  span #{answer.text}
+              else
+                p(style="margin:0;margin-bottom:20px;color:red")
+                  if Answers[i].input
+                    input(type="checkbox" class="answer" name="#{i}" disabled checked)
+                  else 
+                    input(type="checkbox" class="answer" name="#{i}" disabled)
+                  b #{(i + 1)}. 
+                  span #{answer.text}
+      else
+        div(style="width:100%;border:1px solid black;margin-top:1%;")
+          div(style="padding:20px;padding-bottom:0px")
+            input(type="text" name="answer" value="true" style="display:none")
+            each answer, i in CurrentAnswers
+              p(style="margin:0;margin-bottom:20px")
+                input(type="checkbox" class="answer" id="answer#{i}" name="#{i}")
+                b #{(i + 1)}. 
+                span #{answer.text}
+      div(style="width:100%;height:50px;text-align:center")
+        input(type="button" onclick="window.location='/cancel'" value="Abbrechen")
+        div(style="display:inline-block;margin-left:5px;margin-right:5px;padding-top:10px;width:calc(100% - 150px);vertical-align:top")
+          if Answers
+            if Answers.isRight
+              b(style="color:green") Antwort richtig beantwortet!
+            else
+              b(style="color:red") Antwort falsch beantwortet!
+          else
+            b Thema: 
+            span= ThemaName
+          br
+          b 0% 
+          progress(style="width:70%" max="#{Stats.Max}" value="#{Stats.Current - 1}")
+          b  100%
+        button#btnSubmit(type="submit") Weiter
+  if FragenInfo.BILD
+    div(id="img_big" style="display:none;position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.5);text-align:center;padding-top:150px" onclick="this.style.display='none'")
+      img(src="/data/images/#{Frage.BildName}" style="cursor:pointer;")

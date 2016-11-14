@@ -1,0 +1,49 @@
+body {
+  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #EDE8D3;
+}
+
+a {
+  color: #00B7FF;
+}
+
+div.menu div {
+  padding: 5px;
+  margin: 10px;
+  width: 400px;
+  cursor:pointer;
+  border: 1px solid rgb(179, 135, 106);
+}
+div.menu div:hover{
+  font-weight: bold;
+  color:white;
+}
+
+.kartei {
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.k1 {
+  background: #DE9797;
+}
+.k2 {
+  background: #DEB097;
+}
+.k3 {
+  background: #DEC997;
+}
+.k4 {
+  background: #DBDE97;
+}
+.k5 {
+  background: #B9DE97;
+}
+
+input[type=checkbox].answer {
+  width: 45px;
+  height: 45px;
+  margin: 0;
+  margin-right:10px;
+  vertical-align:middle;
+}

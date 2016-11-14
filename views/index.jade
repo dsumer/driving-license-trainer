@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h3 Das Führerschein Lernkartei
+  b Prüfung festlegen: 
+  each prf, i in Pruefungen
+    input(type="button" style="margin:5px" value="#{i}" onclick="window.location='/set?p=#{i}'")
+  div(class="menu")
+    div(class="kartei k5" onclick="window.location='/choose'") Test durchführen
+    div(class="kartei k1" onclick="if(confirm('Wollen Sie die Fragenkartei wirklich zurücksetzen?')) {window.location='/reset';}") Fragenkartei zurücksetzen

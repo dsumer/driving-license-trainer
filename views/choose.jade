@@ -1,0 +1,71 @@
+extends layout
+
+block javascripts
+  script(type="text/javascript").
+    $(document).ready(function() {
+      $('#alltopics').click(function() {
+        var checked = $(this)[0].checked;
+        $('.chk_topic').each(function(i, element) {
+          element.checked = checked;
+        });
+      });
+
+      $('.chk_topic').click(function() {
+        var checked = true;
+        $('.chk_topic').each(function(i, element) {
+          if(!element.checked) checked = false;
+        });
+        $('#alltopics')[0].checked = checked;
+      });
+
+      $('#choose').submit(function(e) {
+        var checked = false;
+        $('.chk_topic').each(function(i, element) {
+          if(element.checked) checked = true;
+        });
+
+        if(!checked) {
+          alert('Bitte wählen Sie mindestens ein Themengebiet aus!');
+          e.preventDefault();
+        }
+      });
+    });
+
+block content
+  h3 Bitte wählen Sie die gewünschte Kartei und die gewünschten Themengebiete
+  form(id="choose",method="get",action="choose")
+    ul
+      li
+        p(style="margin-bottom:0px") Themengebiete wählen
+          p(style="margin-top:0px;margin-left:20px")
+            input(type="checkbox" style="margin-right:10px" id="alltopics" checked)
+            b Alle Themengebiete
+            br
+            div(style="display:table")
+              each topic, i in Pruefung.Themen
+                div(style="display:inline-block;width:300px")
+                  input(type="checkbox" name="#{topic.ID}" class="chk_topic" style="margin-right:10px;margin-bottom:15px" checked)
+                  span= topic.Bezeichnung
+                div(style="display:inline-block;width:250px")
+                  - for(var j = 1; j <= 5; j++) {
+                    div(class="kartei k#{j}" style="display:inline-block;margin-left:10px;width:30px;text-align:center") 
+                      span= Pruefung.Themen[i].karteiCount[j]
+                  - }
+                input(type="button" value="Reset" style="margin-right:30px" onclick="if(confirm('Wollen Sie die Kartei des Themas wirklich zurücksetzen?')){window.location = '/reset/#{topic.ID}';}")
+                if ((i + 1) % 2) == 0
+                  br
+      li
+        p(style="margin-bottom:0px") Kartei wählen
+          p(style="margin-top:0px;margin-left:20px")
+            input(type="radio" style="margin-right:10px" name="kartei" value="0" checked)
+            span Alle
+            br
+            - for(var i = 1; i <= 5; i++) {
+              input(type="radio" style="margin-right:10px;margin-bottom:12px" name="kartei" value="#{i}")
+              span(class="kartei k#{i}" style="display:inline-block;width:175px") 
+                b Kartei #{i}
+                span  - #{KarteiCount[i]} Fragen
+              br
+            - }
+    button(style="margin-right:20px" type="button" onclick="window.location = '/'") Zurück
+    button#btnSubmit(type="submit") Los Gehts!
